@@ -1,0 +1,73 @@
+---
+title: "Tarea 3"
+author: "David Flores"
+date: "2025-03-31"
+output: html_document
+---
+
+```{r setup, include=FALSE,echo=FALSE}
+library(phyloseq)
+library(microbiome)
+library(vegan)
+library(dplyr)
+```
+
+## Interpretaciones de las gráficas
+
+El objeto **ps** que contiene la base de datos ***dietswap*** consiste en 222 muestras las cuales contienen 130 taxones, los metadatos del objeto muestra que tiene las variables de **sexo, nacionalidad, sujeto, grupo, muestra y tiempo**, estos datos se pueden ver con la siguiente línea de código
+
+```{r,echo=FALSE,include=FALSE}
+data("dietswap",package="microbiome")
+ps<-dietswap
+sample_data(ps)
+```
+
+```{r}
+head(sample_data(ps))
+```
+
+## Curva de rarefacción
+
+La curva de rarefacción pueden verse así:
+
+```{r}
+data.prune=prune_taxa(taxa_sums(ps)>1,ps)
+raref<- otu_table(data.prune)
+raref<- as.data.frame(t(raref))
+sample_names<-rownames(raref)
+curaref<- rarecurve(raref, step = 10000)
+curaref<- rarecurve(raref[1:20],step=10000, label=FALSE)
+```
+
+La segunda gráfica se hizo para facilitar la visualización sin etiquetas, en estas curvas se puede observar que la última posicionada a la derecha se empieza a estabilizar, lo que quiere decir que para esa muestra si se hicieron los muestreos suficientes, además de esto las curvas indican que en las muestras pequeñas había mayor riqueza de especies,llegando a tener aproximadamente 16 o 17 especies mientras que las emás se quedan en 14-15 especies
+
+
+## Diversidad alfa
+
+Se utilizaron los índices de Shannon, Simpson y la riqueza observada de las muestras, se hicieron varios intentos, relacionando a x con la variable de sexo, nacionalidad, grupo experimental y con todos las gráficas finales se hicieron tomando en cuenta sexo como la variable x.
+
+```{r}
+data.prune=prune_taxa(taxa_sums(ps)>1,ps)
+plot_richness(data.prune,x="sex",color="sex",measure=c("Observed","Shannon","Simpson"))+
+  geom_boxplot()+theme_bw()+ggtitle("Gráfica")+
+  theme(plot.title=element_text(hjust=0.5))+
+  theme(axis.text.x=element_text(angle=90,hjust=1))
+
+```
+
+Los grupos difieren ya que con excepción a la riqueza observada, en el índice de Shannon y Simpson se observa que la media es un poco mayor en los hombres que en las mujeres, lo que resulta en una mayor diversidad, aunque esta no es una diferencia significativa con las mujeres, los valores no difieren en gran medida entre ambos grupos por lo que no se puede decir con certeza que uno es más diverso que otro.
+
+
+## Gráficas apiladas
+```{r}
+plot_bar(data.prune,x="Phylum",y="Abundance",fill="Phylum")+geom_bar(aes(color=Phylum, fill=Phylum),stat="identity",position="stack")
+plot_bar(data.prune,x="sex",y="Abundance",fill="Phylum")+geom_bar(aes(color=Phylum, fill=Phylum),stat="identity",position="stack")
+
+
+```
+
+La primera gráfica muestra las abundancias de cada uno de los **Phylum** en la base de datos junto a su abundancia, con esto se puede notar que el phylum **Bacteroidetes** junto a **Firmicutes** son los más abundantes, teniendo un valor aproximado de 1,500,000 y 1,300,000 respectivamente cuando los demás phylums tienen un valor aproximado menor a 150,000. 
+
+Estas observaciones se vuelven más evidentes con la gráfica de abundancias apilada en donde el color amarillo y verde correspondientes a los phylums **Bacteroidetes** y **Firmicutes** son los que prevalecen mientras que el phylum **Actinobacteria** es el que menos presencia tiene en la muestra. 
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

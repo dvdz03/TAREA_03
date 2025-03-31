@@ -58,13 +58,6 @@ plot_richness(data.prune,x="sex",color="sex",measure=c("Observed","Shannon","Sim
   theme(plot.title=element_text(hjust=0.5))+
   theme(axis.text.x=element_text(angle=90,hjust=1))
 
-#Filtrado y transformación #para quedarme con los géneros más abundantes
-
-
-#diversidad beta
-
-
-
 
 #gráficas de RANK-ABUNDANCIA
 psTopNOTU<-names(sort(taxa_sums(data.prune), TRUE)[1:10])
