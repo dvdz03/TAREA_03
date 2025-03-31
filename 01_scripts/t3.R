@@ -77,3 +77,20 @@ plot_bar(data.prune,x="Phylum", y="Abundance")
 plot_bar(data.prune,x="sex",y="Abundance",fill="Phylum")+geom_bar(aes(color=Phylum, fill=Phylum),stat="identity",position="stack")
 plot_bar(data.prune,x="nationality",y="Abundance",fill="Phylum")+geom_bar(aes(color=Phylum, fill=Phylum),stat="identity",position="stack")
 plot_bar(data.prune,x="Phylum",y="Abundance",fill="Phylum")+geom_bar(aes(color=Phylum, fill=Phylum),stat="identity",position="stack")#esto es para que la gráfica de abundancias se vea más bonita, así con colores y así
+
+#Exportar los resultados
+data("GlobalPatterns")
+gp<-GlobalPatterns
+gp
+otu_table(gp)
+tax_table(gp)
+
+
+#preprocesamiento
+filtrado<- prune_taxa(taxa_sums(gp)>=5,gp)
+familia<- tax_glom(filtrado,taxrank="Family")
+rank_names(gp)
+rank_names(filtrado)
+familia[ ,c("Soil","Feces","Skin")]
+subset(familia,Soil)
+
